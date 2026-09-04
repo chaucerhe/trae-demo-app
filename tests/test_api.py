@@ -2,16 +2,17 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app, _todos
+from app import main as app_module
+from app.main import app
 
 client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
 def clean_todos():
-    _todos.clear()
+    app_module._todos.clear()
     yield
-    _todos.clear()
+    app_module._todos.clear()
 
 
 def test_create_todo():
@@ -58,3 +59,28 @@ def test_delete_todo():
 def test_update_missing_returns_404():
     r = client.patch("/todos/not-exist", json={"title": "x"})
     assert r.status_code == 404
+
+
+def test_healthz():
+    r = client.get("/healthz")
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
+
+
+def test_list_todos_default_order():
+    client.post("/todos", json={"title": "A"})
+    client.post("/todos", json={"title": "B"})
+    client.post("/todos", json={"title": "C"})
+    r = client.get("/todos")
+    assert r.status_code == 200
+    titles = [t["title"] for t in r.json()]
+    assert titles == ["A", "B", "C"]
+
+
+def test_sort_unknown_value_ignored():
+    client.post("/todos", json={"title": "first"})
+    client.post("/todos", json={"title": "second"})
+    r = client.get("/todos", params={"sort": "unknown_value"})
+    assert r.status_code == 200
+    titles = [t["title"] for t in r.json()]
+    assert titles == ["first", "second"]

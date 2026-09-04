@@ -11,6 +11,12 @@ app = FastAPI(title="Todo API", version="0.1.0")
 _todos: List[dict] = []
 
 
+@app.get("/healthz")
+def healthz() -> dict:
+    """健康检查接口，返回服务状态。"""
+    return {"status": "ok"}
+
+
 class TodoIn(BaseModel):
     title: str
     done: bool = False
