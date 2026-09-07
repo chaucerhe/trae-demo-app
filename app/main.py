@@ -27,6 +27,13 @@ class Todo(TodoIn):
     created_at: str
 
 
+class StatsOut(BaseModel):
+    total: int
+    done: int
+    pending: int
+    done_ratio: float
+
+
 @app.get("/todos", response_model=List[Todo])
 def list_todos(sort: Optional[str] = None):
     """列出所有待办。sort=created_at:desc 时按创建时间降序。"""
@@ -46,6 +53,16 @@ def create_todo(payload: TodoIn):
     }
     _todos.append(todo)
     return todo
+
+
+@app.get("/todos/stats", response_model=StatsOut)
+def todos_stats() -> StatsOut:
+    """按完成状态统计待办数量与完成率。"""
+    total = len(_todos)
+    done = sum(1 for t in _todos if t["done"])
+    pending = total - done
+    done_ratio = round(done / total, 2) if total else 0.0
+    return StatsOut(total=total, done=done, pending=pending, done_ratio=done_ratio)
 
 
 @app.patch("/todos/{todo_id}", response_model=Todo)

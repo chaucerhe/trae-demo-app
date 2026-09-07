@@ -84,3 +84,44 @@ def test_sort_unknown_value_ignored():
     assert r.status_code == 200
     titles = [t["title"] for t in r.json()]
     assert titles == ["first", "second"]
+
+
+def test_stats_empty():
+    r = client.get("/todos/stats")
+    assert r.status_code == 200
+    assert r.json() == {"total": 0, "done": 0, "pending": 0, "done_ratio": 0.0}
+
+
+def test_stats_mixed():
+    for i in range(6):
+        client.post("/todos", json={"title": f"pending-{i}"})
+    for i in range(4):
+        client.post("/todos", json={"title": f"done-{i}", "done": True})
+    r = client.get("/todos/stats")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["total"] == 10
+    assert body["done"] == 4
+    assert body["pending"] == 6
+    assert body["done_ratio"] == 0.4
+
+
+def test_stats_all_done():
+    for i in range(3):
+        client.post("/todos", json={"title": f"done-{i}", "done": True})
+    r = client.get("/todos/stats")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["total"] == 3
+    assert body["done"] == 3
+    assert body["pending"] == 0
+    assert body["done_ratio"] == 1.0
+
+
+def test_stats_ratio_rounding():
+    for i in range(2):
+        client.post("/todos", json={"title": f"done-{i}", "done": True})
+    client.post("/todos", json={"title": "pending-0"})
+    r = client.get("/todos/stats")
+    assert r.status_code == 200
+    assert r.json()["done_ratio"] == 0.67
