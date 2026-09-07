@@ -20,6 +20,7 @@ uvicorn app.main:app --reload
 |---|---|---|
 | GET | /todos | 列出待办；`?sort=created_at:desc` 按创建时间降序 |
 | POST | /todos | 创建待办 `{"title": "...", "done": false}` |
+| GET | /todos/stats | 按完成状态统计数量与占比（`done_ratio` 保留两位小数） |
 | PATCH | /todos/{id} | 更新待办 |
 | DELETE | /todos/{id} | 删除待办 |
 
