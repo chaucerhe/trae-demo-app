@@ -125,3 +125,39 @@ def test_stats_ratio_rounding():
     r = client.get("/todos/stats")
     assert r.status_code == 200
     assert r.json()["done_ratio"] == 0.67
+
+
+def test_stats_view_returns_html():
+    r = client.get("/todos/stats/view")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/html")
+
+
+def test_stats_view_contains_pie_elements():
+    r = client.get("/todos/stats/view")
+    assert "<svg" in r.text
+    assert "Todo 完成状态分布" in r.text
+    assert "待办 pending" in r.text
+    assert "已完成 done" in r.text
+
+
+def test_stats_view_embeds_stats_data():
+    for i in range(6):
+        client.post("/todos", json={"title": f"pending-{i}"})
+    for i in range(4):
+        client.post("/todos", json={"title": f"done-{i}", "done": True})
+    r = client.get("/todos/stats/view")
+    assert r.status_code == 200
+    assert '"total": 10' in r.text
+    assert '"done": 4' in r.text
+    assert '"pending": 6' in r.text
+    assert '"done_ratio": 0.4' in r.text
+
+
+def test_stats_view_empty_state():
+    r = client.get("/todos/stats/view")
+    assert r.status_code == 200
+    assert '"total": 0' in r.text
+    assert "暂无数据" in r.text
+    assert "NaN" not in r.text
+    assert "Infinity" not in r.text
