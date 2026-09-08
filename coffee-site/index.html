@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>屿山咖啡 YUSHAN COFFEE</title>
+<style>
+  :root {
+    --color-bg: #F5F0E8;
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #FBF8F2;
+    --color-text: #3B2A20;
+    --color-text-light: #8A7A6D;
+    --color-accent: #C98436;
+    --color-accent-hover: #B8722B;
+    --color-footer: #2E1F16;
+    --radius-card: 12px;
+    --shadow-card: 0 2px 12px rgba(59, 42, 32, .08);
+    --shadow-card-hover: 0 8px 24px rgba(59, 42, 32, .16);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  img { display: block; max-width: 100%; }
+
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section { scroll-margin-top: 72px; }
+  footer { scroll-margin-top: 0; }
+
+  /* ---------- 导航栏 ---------- */
+  .site-nav {
+    background: var(--color-bg);
+    border-bottom: 1px solid rgba(59, 42, 32, .1);
+  }
+  .site-nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .brand {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    position: relative;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 15px;
+    transition: color .25s;
+  }
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .25s;
+  }
+  .nav-links a:hover { color: var(--color-accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+      linear-gradient(rgba(46, 31, 22, .55), rgba(46, 31, 22, .35)),
+      url("assets/hero.jpg") center / cover no-repeat;
+    padding: 96px 24px;
+  }
+  .hero-title {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #FFFFFF;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .3);
+  }
+  .hero-subtitle {
+    margin-top: 16px;
+    font-size: 18px;
+    letter-spacing: 6px;
+    color: rgba(255, 255, 255, .85);
+  }
+  .btn {
+    display: inline-block;
+    margin-top: 36px;
+    padding: 14px 40px;
+    border-radius: 999px;
+    background: var(--color-accent);
+    color: #FFFFFF;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(201, 132, 54, .4);
+    transition: background .25s, transform .25s, box-shadow .25s;
+  }
+  .btn:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(201, 132, 54, .5);
+  }
+
+  /* ---------- 招牌菜单 ---------- */
+  .menu { padding: 88px 0; }
+  .section-header { text-align: center; margin-bottom: 48px; }
+  .section-header .en {
+    display: block;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+  }
+  .section-header h2 {
+    font-size: 30px;
+    letter-spacing: 4px;
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .card {
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform .3s, box-shadow .3s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  .card-img {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .3s;
+  }
+  .card:hover .card-img img { transform: scale(1.03); }
+  .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 22px;
+  }
+  .card-name { font-size: 18px; font-weight: 600; }
+  .card-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  /* ---------- 关于我们 ---------- */
+  .about { padding: 88px 0; background: var(--color-surface-alt); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .about-text h2 {
+    font-size: 30px;
+    letter-spacing: 4px;
+  }
+  .about-text .underline {
+    width: 48px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-accent);
+    margin: 16px 0 28px;
+  }
+  .about-text p {
+    color: var(--color-text-light);
+    font-size: 16px;
+    line-height: 2;
+  }
+  .about-img img {
+    width: 100%;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ---------- 页脚 ---------- */
+  .site-footer {
+    background: var(--color-footer);
+    color: rgba(245, 240, 232, .9);
+    padding: 48px 0;
+  }
+  .site-footer .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+  .footer-brand { font-size: 16px; font-weight: 600; letter-spacing: 2px; }
+  .footer-info { font-size: 14px; color: rgba(245, 240, 232, .7); }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 959px) {
+    .menu-grid { grid-template-columns: repeat(2, 1fr); }
+    .menu-grid .card:last-child { grid-column: 1 / -1; max-width: 420px; margin: 0 auto; width: 100%; }
+    .about-grid { grid-template-columns: 1fr; gap: 36px; }
+  }
+
+  @media (max-width: 639px) {
+    .hero { min-height: 420px; padding: 72px 20px; }
+    .hero-title { font-size: 28px; letter-spacing: 2px; }
+    .hero-subtitle { font-size: 15px; letter-spacing: 3px; }
+    .menu, .about { padding: 64px 0; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .menu-grid .card:last-child { max-width: none; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 14px; }
+    .site-footer .container { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="#home">屿山咖啡</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#home">首页</a></li>
+        <li><a href="#menu">菜单</a></li>
+        <li><a href="#about">关于我们</a></li>
+        <li><a href="#store">门店</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">城市里的一座小岛</h1>
+      <p class="hero-subtitle">单品手冲 · 每日现烘</p>
+      <a class="btn" href="#menu">查看菜单</a>
+    </div>
+  </section>
+
+  <section id="menu" class="menu">
+    <div class="container">
+      <div class="section-header">
+        <span class="en">SIGNATURE</span>
+        <h2>招牌菜单</h2>
+      </div>
+      <div class="menu-grid">
+        <article class="card">
+          <div class="card-img">
+            <img src="assets/latte.jpg" alt="拿铁" loading="lazy">
+          </div>
+          <div class="card-body">
+            <span class="card-name">拿铁</span>
+            <span class="card-price">¥28</span>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-img">
+            <img src="assets/pourover.jpg" alt="手冲" loading="lazy">
+          </div>
+          <div class="card-body">
+            <span class="card-name">手冲</span>
+            <span class="card-price">¥32</span>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-img">
+            <img src="assets/dirty.jpg" alt="Dirty" loading="lazy">
+          </div>
+          <div class="card-body">
+            <span class="card-name">Dirty</span>
+            <span class="card-price">¥26</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="container about-grid">
+      <div class="about-text">
+        <h2>关于我们</h2>
+        <div class="underline"></div>
+        <p>藏在街角的一间小店，只卖当季新豆。</p>
+        <p>从生豆到杯中不过十步路，</p>
+        <p>愿你在匆忙的城市里，有一座可以停靠的岛。</p>
+      </div>
+      <div class="about-img">
+        <img src="assets/about.jpg" alt="屿山咖啡店内" loading="lazy">
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="store" class="site-footer">
+  <div class="container">
+    <span class="footer-brand">屿山咖啡 YUSHAN COFFEE</span>
+    <span class="footer-info">上海市 · 每日 08:00 – 20:00</span>
+  </div>
+</footer>
+
+<script>
+  // 平滑滚动兜底：为不支持 CSS scroll-behavior 的环境提供 JS 实现
+  (function () {
+    if ('scrollBehavior' in document.documentElement.style) return;
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
